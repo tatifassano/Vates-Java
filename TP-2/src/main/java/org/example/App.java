@@ -145,7 +145,7 @@ public class App
                 case 7:
                     //MEJOR COMPRADOR
                     System.out.println("Mejor Venta");
-                    System.out.println(gestor.mejorVenta() + gestor.recitalMayorVenta());
+                    gestor.recitalMayorVenta();
                     break;
                 case 8:
                     //CARTELERA. Sin los recitales cancelados

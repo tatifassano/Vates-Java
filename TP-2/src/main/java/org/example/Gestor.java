@@ -139,22 +139,6 @@ public class Gestor {
         }
     }
 
-    //Listado de recitales con convocatoria mayor al 80%. Funciona tambien.
-    /*public String mayorConvocatoria1(){
-
-        StringBuilder sb = new StringBuilder();
-
-        List<Recital> consulta = em.createQuery("SELECT r from Recital r " +
-                " where r.ocupacion > (r.capacidadLocal * 0.8)", Recital.class).getResultList();
-
-        for(Recital r : consulta){
-            if(!r.getCancelada()){
-                sb.append((r)+ " - " + "Total Recaudado: " + " $ " +(r.getPrecioEntrada()*r.getOcupacion()) + "\n ");
-            }
-        }
-        return sb.toString();
-    }*/
-
     //Listado de recitales con convocatoria mayor al 80%. Sin contar los canclados.
     public List<RecaudacionPorRecital> mayorConvocatoria(){
 
@@ -172,7 +156,7 @@ public class Gestor {
 
     //Mejor venta. Con cuota = 1 y sin tener en cuenta los recitales cancelados.
     //Ya que se devuelve el importe de esa venta al cancelar el recital.
-    public String mejorVenta(){
+    /*public String mejorVenta(){
 
         StringBuilder sb = new StringBuilder();
 
@@ -186,11 +170,11 @@ public class Gestor {
             sb.append((v) + " \n ");
         }
         return sb.toString();
-    }
+    }*/
 
     //Recital asociado a la mejor venta. Con cuota = 1 y sin tener en cuenta los recitales cancelados.
     //Ya que se devuelve el importe de esa venta al cancelar el recital.
-    public String recitalMayorVenta(){
+   /* public String recitalMayorVenta1(){
 
         StringBuilder sb = new StringBuilder();
 
@@ -205,6 +189,21 @@ public class Gestor {
             sb.append("Recital asociado a la mejor venta: "  + "Id: " + r.getId() + " - " + " Artista: " + r.getArtista());
         }
         return sb.toString();
+    }*/
+
+    //Mejor venta + datos de recital asociado.
+    public List<RecitalPorVenta> recitalMayorVenta(){
+
+        TypedQuery<RecitalPorVenta> consulta = em.createQuery("SELECT new org.example.RecitalPorVenta(v.id, v.recital, v.comprador, v.cant_entradas, v.cuotas, v.total, r.id, r.artista, r.precioEntrada, r.capacidadLocal, r.ocupacion, r.cancelada)" +
+                " \n" +
+                "                            FROM Venta v join Recital r on v.recital = r.id \n" +
+                "                            where r.cancelada = false and v.total = (select MAX(v1.total)" +
+                "                               from Venta v1 join Recital r2 on v1.recital = r2.id " +
+                "                               where v1.cuotas = 1 and r2.cancelada = false)", RecitalPorVenta.class);
+
+        List<RecitalPorVenta> lista = consulta.getResultList();
+        lista.stream().forEach(System.out::println);
+        return lista;
     }
 
     //Devuelve recitales completos. Para mostrar en cartelera. Sin contar los cancelados.
